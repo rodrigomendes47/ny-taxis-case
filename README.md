@@ -61,10 +61,18 @@ Ao final da execução do pipeline, três diretórios principais são criados no
 
 * Dados consolidados com a aplicação da **Regra de Negócio (Business Logic)**.
 * Geração de insights e métricas prontas para consumo pelo Business Intelligence (BI) ou aplicações de Data Science.
+* Utilizado **Delta Tables** para melhor consumo das informações dentro do Databricks.
 * **Métrica levantada:** Análise da **distribuição de corridas por hora**, visando compreender padrões de comportamento e tendências ao longo do tempo.
-* **Particionamento:** Os dados desta camada são otimizados para consulta através do seguinte esquema de particionamento:
+* **Organização do S3:**:
     ```
-    metrics_data/
+    metrics_delta_table/
     ├── [yellow/green]/  <- Tipo de táxi
-    │   ├── arquivo.parquet
     ```
+
+## 📈 Análise e Validação de Dados
+
+Para a validação da organização e estruturação dos dados, foram criados dashboards diretamente na interface do Databricks. Esses painéis têm o objetivo de fornecer insights claros e objetivos aos usuários, garantindo a qualidade e a confiabilidade das informações. Como mostram as imagem a seguir:
+
+<img width="2072" height="1078" alt="dash-panorama" src="https://github.com/user-attachments/assets/2b0d007f-b403-4f86-9852-f4f206b566f8" />
+<img width="1688" height="758" alt="dash-perguntas" src="https://github.com/user-attachments/assets/67582b2f-838d-42c6-9330-f8c1cef61720" />
+
