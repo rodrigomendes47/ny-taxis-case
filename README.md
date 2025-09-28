@@ -62,3 +62,9 @@ Ao final da execução do pipeline, três diretórios principais são criados no
 * Dados consolidados com a aplicação da **Regra de Negócio (Business Logic)**.
 * Geração de insights e métricas prontas para consumo pelo Business Intelligence (BI) ou aplicações de Data Science.
 * **Métrica levantada:** Análise da **distribuição de corridas por hora**, visando compreender padrões de comportamento e tendências ao longo do tempo.
+* **Particionamento:** Os dados desta camada são otimizados para consulta através do seguinte esquema de particionamento:
+    ```
+    metrics_data/
+    ├── [yellow/green]/  <- Tipo de táxi
+    │   ├── arquivo.parquet
+    ```
