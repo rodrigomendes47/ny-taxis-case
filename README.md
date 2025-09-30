@@ -74,7 +74,5 @@ Ao final da execução do pipeline, três diretórios principais são criados no
 Para a validação da organização e estruturação dos dados, foram criados dashboards diretamente na interface do Databricks. Esses painéis têm o objetivo de fornecer insights claros e objetivos aos usuários, garantindo a qualidade e a confiabilidade das informações. Como mostram as imagem a seguir:
 
 <img width="2072" height="1078" alt="dash-panorama" src="https://github.com/user-attachments/assets/2b0d007f-b403-4f86-9852-f4f206b566f8" />
-<img width="1688" height="758" alt="dash-perguntas" src="https://github.com/user-attachments/assets/67582b2f-838d-42c6-9330-f8c1cef61720" />
 <img width="1900" height="482" alt="image" src="https://github.com/user-attachments/assets/fa424fd8-f478-4ecd-b9be-a54a0519acb5" />
-
-
+<img width="1688" height="758" alt="dash-perguntas" src="https://github.com/user-attachments/assets/67582b2f-838d-42c6-9330-f8c1cef61720" />
