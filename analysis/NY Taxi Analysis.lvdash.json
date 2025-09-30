@@ -1,0 +1,959 @@
+{
+  "datasets": [
+    {
+      "name": "8f47f9fc",
+      "displayName": "Monthly Taxi Revenue and Ride Analysis",
+      "queryLines": [
+        "SELECT\r\n",
+        "    EXTRACT(MONTH FROM date) AS month,\r\n",
+        "    EXTRACT(YEAR FROM date) AS year,\r\n",
+        "    --SUM(sum_total_amount) AS sum_total_amount,\r\n",
+        "    --SUM(total_rides) AS total_rides,\r\n",
+        "    (SUM(sum_total_amount) / SUM(total_rides)) AS avg_total_amount\r\n",
+        "FROM\r\n",
+        "    workspace.default.nytaxis\r\n",
+        "GROUP BY\r\n",
+        "    month,\r\n",
+        "    year\r\n",
+        "ORDER BY\r\n",
+        "    year,\r\n",
+        "    month;"
+      ]
+    },
+    {
+      "name": "f9e7b79a",
+      "displayName": "April Taxi Hourly Passenger Averages",
+      "queryLines": [
+        "SELECT\r\n",
+        "    hour,\r\n",
+        "    EXTRACT(MONTH FROM date) AS mes,\r\n",
+        "    AVG(sum_passenger_count) AS avg_passenger_count_month\r\n",
+        "FROM\r\n",
+        "    (SELECT * FROM workspace.default.metrics_yellow\r\n",
+        "    UNION ALL\r\n",
+        "    SELECT * FROM workspace.default.metrics_green\r\n",
+        "    )\r\n",
+        "-- WHERE\r\n",
+        "--     EXTRACT(MONTH FROM date) = 5\r\n",
+        "GROUP BY\r\n",
+        "    hour,mes\r\n",
+        "ORDER BY\r\n",
+        "    mes, hour;"
+      ]
+    },
+    {
+      "name": "549ef334",
+      "displayName": "metrics_green",
+      "queryLines": [
+        "SELECT * FROM workspace.default.metrics_green"
+      ]
+    },
+    {
+      "name": "28ec62c0",
+      "displayName": "metrics_yellow",
+      "queryLines": [
+        "SELECT * FROM workspace.default.metrics_yellow"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "0a66c120",
+      "displayName": "Global Filters",
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS"
+    },
+    {
+      "name": "0fd8fbcf",
+      "displayName": "Perguntas",
+      "layout": [
+        {
+          "widget": {
+            "name": "39bb79a9",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f9e7b79a",
+                  "fields": [
+                    {
+                      "name": "hour",
+                      "expression": "`hour`"
+                    },
+                    {
+                      "name": "sum(avg_passenger_count_month)",
+                      "expression": "SUM(`avg_passenger_count_month`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "hour",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "axis": {
+                    "title": "Hora"
+                  },
+                  "displayName": "Hora"
+                },
+                "y": {
+                  "fieldName": "sum(avg_passenger_count_month)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "axis": {
+                    "title": "Media de passegeiros"
+                  },
+                  "displayName": "Media de passegeiros"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Media de passageiros por hora (toda a frota)"
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 1,
+            "width": 4,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "1f265a28",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "8f47f9fc",
+                  "fields": [
+                    {
+                      "name": "avg_total_amount",
+                      "expression": "`avg_total_amount`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg_total_amount",
+                  "displayName": "avg_total_amount"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Receita Media por corrida no mes US$ (US$ - Yellow Taxi)"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 2,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "61c5fda1",
+            "queries": [
+              {
+                "name": "dashboards/01f09c109aa91a6c928ea44d420bf910/datasets/01f09c1627351581b7c67d461e440d2d_month",
+                "query": {
+                  "datasetName": "8f47f9fc",
+                  "fields": [
+                    {
+                      "name": "month",
+                      "expression": "`month`"
+                    },
+                    {
+                      "name": "month_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f09c109aa91a6c928ea44d420bf910/datasets/01f09c2407681c1286e3777e799c40d2_mes",
+                "query": {
+                  "datasetName": "f9e7b79a",
+                  "fields": [
+                    {
+                      "name": "mes",
+                      "expression": "`mes`"
+                    },
+                    {
+                      "name": "mes_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "month",
+                    "displayName": "month",
+                    "queryName": "dashboards/01f09c109aa91a6c928ea44d420bf910/datasets/01f09c1627351581b7c67d461e440d2d_month"
+                  },
+                  {
+                    "fieldName": "mes",
+                    "displayName": "mes",
+                    "queryName": "dashboards/01f09c109aa91a6c928ea44d420bf910/datasets/01f09c2407681c1286e3777e799c40d2_mes"
+                  }
+                ]
+              },
+              "selection": {
+                "defaultSelection": {
+                  "values": {
+                    "dataType": "INTEGER",
+                    "values": [
+                      {
+                        "value": "1"
+                      }
+                    ]
+                  }
+                }
+              },
+              "disallowAll": true,
+              "scale": {
+                "type": "categorical",
+                "sort": {
+                  "by": "natural-order"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "showDescription": false,
+                "title": "Mes"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    },
+    {
+      "name": "eb769bd2",
+      "displayName": "Panorama Geral",
+      "layout": [
+        {
+          "widget": {
+            "name": "338be071",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "28ec62c0",
+                  "fields": [
+                    {
+                      "name": "monthly(date)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `date`)"
+                    },
+                    {
+                      "name": "sum(total_rides)",
+                      "expression": "SUM(`total_rides`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(date)",
+                  "scale": {
+                    "type": "temporal"
+                  },
+                  "axis": {
+                    "title": "Mes"
+                  },
+                  "displayName": "Mes"
+                },
+                "y": {
+                  "fieldName": "sum(total_rides)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "axis": {
+                    "title": "Total de corridas"
+                  },
+                  "displayName": "Total de corridas"
+                }
+              },
+              "frame": {
+                "title": "Total de corridas - Yellow Taxi",
+                "showTitle": true
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 3,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "e194c87c",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "549ef334",
+                  "fields": [
+                    {
+                      "name": "monthly(date)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `date`)"
+                    },
+                    {
+                      "name": "sum(total_rides)",
+                      "expression": "SUM(`total_rides`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(date)",
+                  "scale": {
+                    "type": "temporal"
+                  },
+                  "axis": {
+                    "title": "Mes"
+                  },
+                  "displayName": "Mes"
+                },
+                "y": {
+                  "fieldName": "sum(total_rides)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "axis": {
+                    "title": "Total de corridas"
+                  },
+                  "displayName": "Total de corridas"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Total de corridas - Green Taxi"
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 1,
+            "width": 3,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "50057f92",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "28ec62c0",
+                  "fields": [
+                    {
+                      "name": "hour",
+                      "expression": "`hour`"
+                    },
+                    {
+                      "name": "avg(total_rides)",
+                      "expression": "AVG(`total_rides`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "hour",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "hour"
+                },
+                "y": {
+                  "fieldName": "avg(total_rides)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "axis": {
+                    "title": "Media de total de corridas"
+                  },
+                  "displayName": "Media de total de corridas"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Media de total de corridas por hora"
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "6c4ff60c",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "549ef334",
+                  "fields": [
+                    {
+                      "name": "hour",
+                      "expression": "`hour`"
+                    },
+                    {
+                      "name": "avg(total_rides)",
+                      "expression": "AVG(`total_rides`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "hour",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "hour"
+                },
+                "y": {
+                  "fieldName": "avg(total_rides)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "axis": {
+                    "title": "Media de total de corridas"
+                  },
+                  "displayName": "Media de total de corridas"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Media de total de corridas por hora"
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 6,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "d5be2aca",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "28ec62c0",
+                  "fields": [
+                    {
+                      "name": "sum(sum_passenger_count)",
+                      "expression": "SUM(`sum_passenger_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(sum_passenger_count)"
+                }
+              },
+              "frame": {
+                "title": "Total de passageiros transportados",
+                "showTitle": true,
+                "showDescription": true,
+                "description": "Yellow Taxi"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 14,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "dc2969af",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "549ef334",
+                  "fields": [
+                    {
+                      "name": "sum(sum_passenger_count)",
+                      "expression": "SUM(`sum_passenger_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(sum_passenger_count)"
+                }
+              },
+              "frame": {
+                "title": "Total de passageiros transportados",
+                "showTitle": true,
+                "showDescription": true,
+                "description": "Green Taxi"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 14,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "ac9dc4cf",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "28ec62c0",
+                  "fields": [
+                    {
+                      "name": "sum(total_rides)",
+                      "expression": "SUM(`total_rides`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_rides)"
+                }
+              },
+              "frame": {
+                "title": "Total de corridas",
+                "showTitle": true,
+                "showDescription": true,
+                "description": "Yellow Taxi"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "66d729b7",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "549ef334",
+                  "fields": [
+                    {
+                      "name": "sum(total_rides)",
+                      "expression": "SUM(`total_rides`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_rides)"
+                }
+              },
+              "frame": {
+                "title": "Total de corridas",
+                "showTitle": true,
+                "showDescription": true,
+                "description": "Green Taxi"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 12,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "d71b7aef",
+            "queries": [
+              {
+                "name": "dashboards/01f09c109aa91a6c928ea44d420bf910/datasets/01f09c26c1c71fbca3c9bcf43760cc5a_date",
+                "query": {
+                  "datasetName": "549ef334",
+                  "fields": [
+                    {
+                      "name": "date",
+                      "expression": "`date`"
+                    },
+                    {
+                      "name": "date_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f09c109aa91a6c928ea44d420bf910/datasets/01f09c26d8d6136985e2e00474280d8b_date",
+                "query": {
+                  "datasetName": "28ec62c0",
+                  "fields": [
+                    {
+                      "name": "date",
+                      "expression": "`date`"
+                    },
+                    {
+                      "name": "date_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-date-range-picker",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "date",
+                    "queryName": "dashboards/01f09c109aa91a6c928ea44d420bf910/datasets/01f09c26c1c71fbca3c9bcf43760cc5a_date"
+                  },
+                  {
+                    "fieldName": "date",
+                    "queryName": "dashboards/01f09c109aa91a6c928ea44d420bf910/datasets/01f09c26d8d6136985e2e00474280d8b_date"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Periodo de analise"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    }
+  }
+}
